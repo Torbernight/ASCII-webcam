@@ -16,14 +16,16 @@ def img_to_ascii(inp:Image.Image):
             r, g, b = inp.getpixel((x, y))
             brgth = 0.299*r + 0.587*g + 0.114*b
             map_ = floor((charmap/255)*brgth)
-            out += aschar[map_] * 2
+            out += aschar[map_] # the output is kinda squashed by the size of the characters
+                                # but it still looks cool I think. you can add "*2" here to fix it.
+                                # if you prefer that.
         out += "\n"
     return out
 
 
 def Main():
     capture = cv2.VideoCapture(0)
-    for _ in iter(int, 1):
+    for _ in iter(int, 1): # avoided any while loops to reduce latency
         if (capture.isOpened()):
             ret, frame = capture.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
