@@ -6,18 +6,18 @@ from math import floor
 import os
 
 def img_to_ascii(inp:Image.Image):
-    aschar = ("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/" + r'''\|()1{}[]?-_+~<>i!lI;:,"^`'. ''')[::-1]
+    aschar = '''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`'. '''[::-1]
     charmap = len(aschar) - 1
     out = ""
-    w,h = 107, 60
+    w,h = 107, 60 # this is the resolution that worked best for me
     inp = inp.resize((w, h))
     for y in range(h):
         for x in range(w):
             r, g, b = inp.getpixel((x, y))
-            brgth = 0.299*r + 0.587*g + 0.114*b
-            map_ = floor((charmap/255)*brgth)
-            out += aschar[map_] # the output is kinda squashed by the size of the characters
-                                # but it still looks cool I think. you can add "*2" here to fix it.
+            lum = 0.299*r + 0.587*g + 0.114*b # there are lots of formulas for this if you want to experiment
+            map_ = floor((charmap/255)*lum)
+            out += aschar[map_] # the output looks squashed by the size of the characters
+                                # but it still looks cool I think. you can add "*2" here to fix it
                                 # if you prefer that.
         out += "\n"
     return out
@@ -35,9 +35,6 @@ def Main():
             print(out)
         else:
             break
-
-    capture.release()
-    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     Main()
