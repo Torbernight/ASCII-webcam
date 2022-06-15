@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+import cv2
+from PIL import Image
+from math import floor
+import os
+
+def img_to_ascii(inp:Image.Image):
+    aschar = ("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/" + r'''\|()1{}[]?-_+~<>i!lI;:,"^`'. ''')[::-1]
+    charmap = len(aschar) - 1
+    out = ""
+    w,h = 107, 60
+    inp = inp.resize((w, h))
+    for y in range(h):
+        for x in range(w):
+            r, g, b = inp.getpixel((x, y))
+            brgth = 0.299*r + 0.587*g + 0.114*b
+            map_ = floor((charmap/255)*brgth)
+            out += aschar[map_] * 2
+        out += "\n"
+    return out
+
+
+def Main():
+    capture = cv2.VideoCapture(0)
+    for _ in iter(int, 1):
+        if (capture.isOpened()):
+            ret, frame = capture.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            im_pil = Image.fromarray(frame)
+            out = img_to_ascii(im_pil)
+            os.system('clear')
+            print(out)
+        else:
+            break
+
+    capture.release()
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    Main()
